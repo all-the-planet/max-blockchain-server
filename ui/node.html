@@ -86,7 +86,7 @@
                     </div>
                 </div>
                 <div class="col text-right">
-                    <h2>Funds: {{ funds }}</h2>
+                    <h2>Funds: {{ funds.toFixed(2) }}</h2>
                 </div>
             </div>
             <hr>
@@ -266,7 +266,7 @@
                     axios.get('/wallet')
                         .then(function (response) {
                             vm.error = null
-                            vm.success = 'Created ECO Wallet! Public Key: ' + response.data.public_key + ', Private Key: ' + response.data.private_key;
+                            vm.success = 'Your ECO Wallet! Public Key: ' + response.data.public_key + ', Private Key: ' + response.data.private_key;
                             vm.wallet = {
                                 public_key: response.data.public_key,
                                 private_key: response.data.private_key
@@ -283,14 +283,24 @@
                 },
                 onSendTx: function () {
                     // Send Transaction to backend
-                    if (Math.random() > 0.5) {
-                        this.error = null
-                        this.success = 'Successfully stored transaction!'
-                        this.funds = this.funds - this.outgoingTx.amount
-                    } else {
-                        this.success = null;
-                        this.error = 'Something went wrong!'
-                    }
+                    this.txLoading = true;
+                    var vm = this;
+                    axios.post('/transaction', {
+                        recipient: this.outgoingTx.recipient,
+                        amount: this.outgoingTx.amount
+                    })
+                    .then(function(response) {
+                            vm.error = null;
+                            vm.success = response.data.message
+                            console.log(response.data);
+                            vm.funds = response.data.funds;
+                            vm.txLoading = false;
+                        })
+                        .catch(function (error) {
+                            vm.success = null;
+                            vm.error = error.response.data.message;
+                            vm.txLoading = false;
+                        });
                 },
                 onMine: function () {
                     var vm = this
