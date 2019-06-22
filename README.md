@@ -10,3 +10,5 @@ Thus
 
 ToDo: 
 - Add project / list of tasks to implement all the components of a functional business/economy organism 
+
+© Ianta Labs / MIT license
