@@ -94,7 +94,7 @@ class Blockchain:
                 f.write('\n')
                 saveable_tx = [tx.__dict__ for tx in self.__open_transactions]
                 f.write(json.dumps(saveable_tx))
-                f.write('\')
+                f.write('\n')
                 f.write(json.dumps(list(self.__peer_nodes)))   
                 # save_data = {
                 #     'chain': blockchain,
@@ -220,3 +220,7 @@ class Blockchain:
         """
         self.__peer_nodes.discard(node)
         self.save_data()
+
+    def get_peer_nodes(self):
+        """Return a list of all connected peer nodes."""
+        return list(self.__peer_nodes)
