@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>GIT DNA Blockchain</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
-        crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
+        integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <style>
         .lds-ring {
             display: inline-block;
@@ -45,6 +45,7 @@
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
             }
@@ -99,11 +100,13 @@
                     <form @submit.prevent="onSendTx">
                         <div class="form-group">
                             <label for="recipient">Recipient Key</label>
-                            <input v-model="outgoingTx.recipient" type="text" class="form-control" id="recipient" placeholder="Enter key">
+                            <input v-model="outgoingTx.recipient" type="text" class="form-control" id="recipient"
+                                placeholder="Enter key">
                         </div>
                         <div class="form-group">
-                            <label for="amount">Amount of Coins</label>
-                            <input v-model.number="outgoingTx.amount" type="number" step="0.001" class="form-control" id="amount">
+                            <label for="amount">Amount of ATP Coins</label>
+                            <input v-model.number="outgoingTx.amount" type="number" step="0.001" class="form-control"
+                                id="amount">
                             <small class="form-text text-muted">Fractions are possible (e.g. 5.67)</small>
                         </div>
                         <div v-if="txLoading" class="lds-ring">
@@ -112,7 +115,8 @@
                             <div></div>
                             <div></div>
                         </div>
-                        <button :disabled="txLoading || outgoingTx.recipient.trim() === '' || outgoingTx.amount <= 0" type="submit" class="btn btn-primary">Send</button>
+                        <button :disabled="txLoading || outgoingTx.recipient.trim() === '' || outgoingTx.amount <= 0"
+                            type="submit" class="btn btn-primary">Send</button>
                     </form>
                 </div>
             </div>
@@ -121,18 +125,22 @@
                 <div class="col">
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
-                            <a class="nav-link" :class="{active: view === 'chain'}" href="#" @click="view = 'chain'">Blockchain</a>
+                            <a class="nav-link" :class="{active: view === 'chain'}" href="#"
+                                @click="view = 'chain'">Blockchain</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" :class="{active: view === 'tx'}" href="#" @click="view = 'tx'">Open Transactions</a>
+                            <a class="nav-link" :class="{active: view === 'tx'}" href="#" @click="view = 'tx'">Open
+                                Transactions</a>
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="row my-3">
                 <div class="col">
-                    <button class="btn btn-primary" @click="onLoadData">{{ view === 'chain' ? 'Load Blockchain' : 'Load Transactions' }}</button>
-                    <button v-if="view === 'chain' && wallet" class="btn btn-success" @click="onMine">Mine Coins</button>
+                    <button class="btn btn-primary"
+                        @click="onLoadData">{{ view === 'chain' ? 'Load Blockchain' : 'Load Transactions' }}</button>
+                    <button v-if="view === 'chain' && wallet" class="btn btn-success" @click="onMine">Mine
+                        Coins</button>
                 </div>
             </div>
             <div class="row">
@@ -147,7 +155,8 @@
                         <div class="card" v-for="(data, index) in loadedData">
                             <div v-if="view === 'chain'" class="card-header">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link" type="button" @click="showElement === index ? showElement = null : showElement = index">
+                                    <button class="btn btn-link" type="button"
+                                        @click="showElement === index ? showElement = null : showElement = index">
                                         Block | Contrib. #{{ data.index }}
                                     </button>
                                 </h5>
@@ -156,7 +165,8 @@
                                 <div class="card-body">
                                     <p>Previous Hash: {{ data.previous_hash }}</p>
                                     <div class="list-group">
-                                        <div v-for="tx in data.transactions" class="list-group-item flex-column align-items-start">
+                                        <div v-for="tx in data.transactions"
+                                            class="list-group-item flex-column align-items-start">
                                             <div>Commit Sender: {{ tx.sender }}</div>
                                             <div>Commit PM Recipient: {{ tx.recipient }}</div>
                                             <div>Commit Amount: {{ tx.amount }} $ECO (sec or cal/ATP)</div>
@@ -167,7 +177,8 @@
 
                             <div v-if="view === 'tx'" class="card-header">
                                 <h5 class="mb-0">
-                                    <button class="btn btn-link" type="button" @click="showElement === index ? showElement = null : showElement = index">
+                                    <button class="btn btn-link" type="button"
+                                        @click="showElement === index ? showElement = null : showElement = index">
                                         Transaction | Commit #{{ index }}
                                     </button>
                                 </h5>
@@ -233,15 +244,34 @@
                         .then(function (response) {
                             vm.error = null
                             vm.success = 'Created ECO Wallet! Public Key: ' + response.data.public_key + ', Private Key: ' + response.data.private_key;
+                            vm.wallet = {
+                                public_key: response.data.public_key,
+                                private_key: response.data.private_key
+                            }
                         })
                         .catch(function (error) {
                             vm.success = null;
                             vm.error = error.data.message
+                            vm.wallet = null
                         });
                 },
                 onLoadWallet: function () {
                     // Send Http request to load an existing wallet (from a file on the server)
-
+                    var vm = this;
+                    axios.get('/wallet')
+                        .then(function (response) {
+                            vm.error = null
+                            vm.success = 'Created ECO Wallet! Public Key: ' + response.data.public_key + ', Private Key: ' + response.data.private_key;
+                            vm.wallet = {
+                                public_key: response.data.public_key,
+                                private_key: response.data.private_key
+                            }
+                        })
+                        .catch(function (error) {
+                            vm.success = null;
+                            vm.error = error.data.message
+                            vm.wallet = null
+                        });
                 },
                 onSendTx: function () {
                     // Send Transaction to backend
@@ -254,7 +284,7 @@
                         this.error = 'Something went wrong!'
                     }
                 },
-                onMine: function() {
+                onMine: function () {
                     if (Math.random() > 0.5) {
                         this.error = null
                         this.success = 'Successfully mined coins!'
