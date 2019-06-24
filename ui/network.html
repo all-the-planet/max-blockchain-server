@@ -85,7 +85,7 @@
                 onAddNode: function() {
                     // Add node as peer node to local node server
                     var vm = this;
-                    axios.post('/node', {node: newNodeUrl})
+                    axios.post('/node', {node: this.newNodeUrl})
                         .then(function(response) {
                             vm.success  = 'Stored node successfully.';
                             vm.error = null;
