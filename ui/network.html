@@ -76,18 +76,28 @@
         new Vue({
             el: '#app',
             data: {
-                nodes: [
-                    'localhost:5001',
-                    'localhost:5002',
-                ],
-                newNodeUrl: ''
+                nodes: [],
+                newNodeUrl: '',
+                error: null,
+                success: null
             },
             methods: {
                 onAddNode: function() {
                     // Add node as peer node to local node server
                 },
                 onLoadNodes: function() {
+                    var vm = this;
                     // Load all peer nodes of the local node server
+                    axios.get('/nodes')
+                        .then(function(response) {
+                            vm.success  = 'Fetched nodes successfully.';
+                            vm.error = null;
+                            vm.nodes = response.data.all_nodes;
+                        })
+                        .catch(function(error) {
+                            vm.success = null;
+                            vm.error = error.response.data.message;
+                        })
                 },
                 onRemoveNode: function() {
                     // Remove node as a peer node
