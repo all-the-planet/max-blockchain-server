@@ -30,7 +30,7 @@ def create_keys():
             'funds': blockchain.get_balance()
         }
         return jsonify(response), 201
-    else: 
+    else:
         response = {
             'message': 'Saving the keys failed.'
         }
@@ -48,11 +48,12 @@ def load_keys():
             'funds': blockchain.get_balance()
         }
         return jsonify(response), 201
-    else: 
+    else:
         response = {
             'message': 'Loading the keys failed.'
         }
         return jsonify(response), 500
+
 
 @app.route('/balance', methods=['GET'])
 def get_balance():
@@ -70,6 +71,35 @@ def get_balance():
         }
         return jsonify(response), 500
 
+
+@app.route('/broadcast-transaction')
+def broadcast_transaction():
+    values = request.get_json()
+    if not values:
+        response = {'message': 'No data found.'}
+        return jsonify(response), 400
+    required = ['sender', 'recipient', 'amount', 'signature']
+    if not all(key in values for key in required):
+        response = {'message': 'Some data is missing.'}
+        return jsonify(response), 400
+    success = blockchain.add_transaction(
+        values['recipient'], values['sender'], values['signature'], values['amount'], is_receiving=True)
+    if success:
+        response = {
+            'message': 'Successfully added transaction.',
+            'transaction': {
+                'sender': values['sender'],
+                'recipient': values['recipient'],
+                'amount': values['amount'],
+                'signature': values['signature']
+            }
+        }
+        return jsonify(response), 201
+    else:
+        response = {
+            'message': 'Creating a transaction failed.'
+        }
+        return jsonify(response), 500
 
 
 @app.route('/transaction', methods=['POST'])
@@ -94,7 +124,8 @@ def add_transaction():
     recipient = values['recipient']
     amount = values['amount']
     signature = wallet.sign_transaction(wallet.public_key, recipient, amount)
-    success = blockchain.add_transaction(recipient, wallet.public_key, signature, amount)
+    success = blockchain.add_transaction(
+        recipient, wallet.public_key, signature, amount)
     if success:
         response = {
             'message': 'Successfully added transaction.',
@@ -117,7 +148,7 @@ def add_transaction():
 @app.route('/mine', methods=['POST'])
 def mine():
     block = blockchain.mine_block()
-    if block!= None:
+    if block != None:
         dict_block = block.__dict__.copy()
         dict_block['transactions'] = [
             tx.__dict__ for tx in dict_block['transactions']]
@@ -197,13 +228,13 @@ def get_nodes():
     }
     return jsonify(response), 200
 
+
 if __name__ == '__main__':
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument('-p','--port', type=int, default=5010)
+    parser.add_argument('-p', '--port', type=int, default=5010)
     args = parser.parse_args()
     port = args.port
     wallet = Wallet(port)
     blockchain = Blockchain(wallet.public_key, port)
     app.run(host='127.0.0.1', port=port)
-
