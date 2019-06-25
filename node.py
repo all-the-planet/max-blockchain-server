@@ -200,5 +200,10 @@ def get_nodes():
     return jsonify(response), 200
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5010)
+    from argparse import ArgumentParser
+    parser = ArgumentParser()
+    parser.add_argument('-p','--port', type=int, default=5010)
+    args = parser.parse_args()
+    port = args.port
+    app.run(host='127.0.0.1', port=port)
 
