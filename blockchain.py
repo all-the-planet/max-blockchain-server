@@ -173,7 +173,7 @@ class Blockchain:
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
             self.save_data()
-            fon node in self.__peer_nodes:
+            for node in self.__peer_nodes:
                 url = 'http://{}/broadcast-transaction'.format(node)
                 try: 
                 response = requests.post(url, json={'sender': sender, 'recipient': recipient, 'amount': amount, 'signature': signature})
