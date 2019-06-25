@@ -113,7 +113,7 @@ def broadcast_block():
         return jsonify(response), 400
     block = values['block']
     if block['index'] == blockchain.chain[-1].index + 1:
-        pass
+        blockchain.add_block(block)
     elif block['index'] > blockchain.chain[-1].index:
         pass
     else:
