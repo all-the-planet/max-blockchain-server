@@ -5,8 +5,6 @@ from wallet import Wallet
 from blockchain import Blockchain
 
 app = Flask(__name__)
-wallet = Wallet()
-blockchain = Blockchain(wallet.public_key)
 CORS(app)
 
 
@@ -205,5 +203,7 @@ if __name__ == '__main__':
     parser.add_argument('-p','--port', type=int, default=5010)
     args = parser.parse_args()
     port = args.port
+    wallet = Wallet(port)
+    blockchain = Blockchain(wallet.public_key, port)
     app.run(host='127.0.0.1', port=port)
 
