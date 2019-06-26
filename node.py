@@ -66,7 +66,7 @@ def get_balance():
         return jsonify(response), 200
     else:
         response = {
-            'message': 'Loading balance failed.',
+            'messsage': 'Loading balance failed.',
             'wallet_set_up': wallet.public_key != None
         }
         return jsonify(response), 500
@@ -117,11 +117,11 @@ def broadcast_block():
             response = {'message': 'Block added'}
             return jsonify(response), 201
         else:
-            response = { 'Message': 'Block seems invalid.'} 
+            response = {'message': 'Block seems invalid.'}
             return jsonify(response), 500
     elif block['index'] > blockchain.chain[-1].index:
         pass
-    else:
+    else: 
         response = {'message': 'Blockchain seems to be shorter, block not added'}
         return jsonify(response), 409
 
@@ -256,9 +256,9 @@ def get_nodes():
 if __name__ == '__main__':
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    parser.add_argument('-p', '--port', type=int, default=5010)
+    parser.add_argument('-p', '--port', type=int, default=5000)
     args = parser.parse_args()
     port = args.port
     wallet = Wallet(port)
     blockchain = Blockchain(wallet.public_key, port)
-    app.run(host='127.0.0.1', port=port)
+    app.run(host='0.0.0.0', port=port)

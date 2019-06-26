@@ -17,14 +17,16 @@ MINING_REWARD = 10
 
 print(__name__)
 
+
 class Blockchain:
     """The Blockchain class manages the chain of blocks as well as open transactions and the node on which it's running.
-    
+
     Attributes:
         :chain: The list of blocks
         :open_transactions (private): The list of open transactions
         :hosting_node: The connected node (which runs the blockchain).
     """
+
     def __init__(self, public_key, node_id):
         """The constructor of the Blockchain class."""
         # Our starting block for the blockchain
@@ -37,7 +39,6 @@ class Blockchain:
         self.__peer_nodes = set()
         self.node_id = node_id
         self.load_data()
-        
 
     # This turns the chain attribute into a property with a getter (the method below) and a setter (@chain.setter)
     @property
@@ -45,10 +46,9 @@ class Blockchain:
         return self.__chain[:]
 
     # The setter for the chain property
-    @chain.setter 
+    @chain.setter
     def chain(self, val):
         self.__chain = val
-
 
     def get_open_transactions(self):
         """Returns a copy of the open transactions list."""
@@ -81,7 +81,7 @@ class Blockchain:
                     updated_transactions.append(updated_transaction)
                 self.__open_transactions = updated_transactions
                 peer_nodes = json.loads(file_content[2])
-                self.peer_nodes = set(peer_nodes)
+                self.__peer_nodes = set(peer_nodes)
         except (IOError, IndexError):
             pass
         finally:
@@ -98,7 +98,7 @@ class Blockchain:
                 saveable_tx = [tx.__dict__ for tx in self.__open_transactions]
                 f.write(json.dumps(saveable_tx))
                 f.write('\n')
-                f.write(json.dumps(list(self.__peer_nodes)))   
+                f.write(json.dumps(list(self.__peer_nodes)))
                 # save_data = {
                 #     'chain': blockchain,
                 #     'ot': open_transactions
@@ -161,8 +161,8 @@ class Blockchain:
         """ Append a new value as well as the last blockchain value to the blockchain.
 
         Arguments:
-            :sender: The sender of the coins.
-            :recipient: The recipient of the coins.
+            :sender: Tecihe sender of the coins.
+            :rpient: The recipient of the coins.
             :amount: The amount of coins sent with the transaction (default = 1.0)
         """
         # transaction = {
@@ -170,17 +170,18 @@ class Blockchain:
         #     'recipient': recipient,
         #     'amount': amount
         # }
-        if self.public_key == None:
-            return False
+        # if self.public_key == None:
+        #     return False
         transaction = Transaction(sender, recipient, signature, amount)
         if Verification.verify_transaction(transaction, self.get_balance):
             self.__open_transactions.append(transaction)
             self.save_data()
-            if not is_receiving:    
+            if not is_receiving:
                 for node in self.__peer_nodes:
                     url = 'http://{}/broadcast-transaction'.format(node)
-                    try: 
-                        response = requests.post(url, json={'sender': sender, 'recipient': recipient, 'amount': amount, 'signature': signature})
+                    try:
+                        response = requests.post(url, json={
+                                                 'sender': sender, 'recipient': recipient, 'amount': amount, 'signature': signature})
                         if response.status_code == 400 or response.status_code == 500:
                             print('Transaction declined, needs resolving')
                             return False
@@ -204,7 +205,8 @@ class Blockchain:
         #     'recipient': owner,
         #     'amount': MINING_REWARD
         # }
-        reward_transaction = Transaction('MINING', self.public_key, '', MINING_REWARD)
+        reward_transaction = Transaction(
+            'MINING', self.public_key, '', MINING_REWARD)
         # Copy transaction instead of manipulating the original open_transactions list
         # This ensures that if for some reason the mining should fail, we don't have the reward transaction stored in the open transactions
         copied_transactions = self.__open_transactions[:]
@@ -220,7 +222,8 @@ class Blockchain:
         for node in self.__peer_nodes:
             url = 'http://{}/broadcast-block'.format(node)
             converted_block = block.__dict__.copy()
-            converted_block['transactions'] = [tx.__dict__ for tx in converted_block['transactions']]
+            converted_block['transactions'] = [
+                tx.__dict__ for tx in converted_block['transactions']]
             try:
                 response = requests.post(url, json={'block': converted_block})
                 if response.status_code == 400 or response.status_code == 500:
@@ -229,7 +232,6 @@ class Blockchain:
                 continue
         return block
 
-    
     def add_block(self, block):
         transactions = [Transaction(
             tx['sender'], tx['recipient'], tx['signature'], tx['amount']) for tx in block['transactions']]
@@ -238,11 +240,19 @@ class Blockchain:
         hashes_match = hash_block(self.chain[-1]) == block['previous_hash']
         if not proof_is_valid or not hashes_match:
             return False
-        converted_block = Block(block['index'], block['previous_hash'], transactions, block['proof'], block['timestamp'])
+        converted_block = Block(
+            block['index'], block['previous_hash'], transactions, block['proof'], block['timestamp'])
         self.__chain.append(converted_block)
+        stored_transactions = self.__open_transactions[:]
+        for itx in block['transactions']:
+            for opentx in stored_transactions:
+                if opentx.sender == itx['sender'] and opentx.recipient == itx['recipient'] and opentx.amount == itx['amount'] and opentx.signature == itx['signature']:
+                    try:
+                        self.__open_transactions.remove(opentx)
+                    except ValueError:
+                        print('Item was already removed')
         self.save_data()
         return True
-
 
     def add_peer_node(self, node):
         """Adds a new node to the peer node set.
