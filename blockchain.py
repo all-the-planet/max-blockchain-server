@@ -262,7 +262,7 @@ class Blockchain:
         replace = False
         for node in self.__peer_nodes:
             url = 'http://{}/chain'.format(node)
-            try
+            try:
                 response = requests.get(url)
                 node_chain = response.json()
                 node_chain = [Block(block['index'], block['previous_hash'], block['transactions'], block['proof'], block['timestamp']) for block in node_chain]
@@ -272,7 +272,7 @@ class Blockchain:
                 if node_chain_length > local_chain_length and Verification.verify_chain(node_chain):
                     winner_chain = node_chain
                     replace = True
-            except requests.exceptions.ConnectionError
+            except requests.exceptions.ConnectionError:
                 continue
         self.resolve_conflicts = False
         self.chain = winner_chain
