@@ -18,12 +18,6 @@
                     <h1>My ECO Friends</h1>
                 </div>
             </div>
-            <div v-if="error" class="alert alert-danger" role="alert">
-                {{ error }}
-            </div>
-            <div v-if="success" class="alert alert-success" role="alert">
-                {{ success }}
-            </div>
             <div class="row">
                 <div class="col">
                     <ul class="nav nav-pills">
@@ -36,7 +30,13 @@
                     </ul>
                 </div>
             </div>
-            <hr>
+            <hr>            
+            <div v-if="error" class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            <div v-if="success" class="alert alert-success" role="alert">
+                {{ success }}
+            </div>
             <div class="row">
                 <div class="col">
                     <form @submit.prevent="onAddNode">
