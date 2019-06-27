@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>ECO World</title>
+    <title>ECO System</title>
+    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico' />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css"
         integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
     <style>
@@ -58,7 +59,7 @@
         <div class="container">
             <div class="row mb-3">
                 <div class="col">
-                    <h1>My ECO World</h1>
+                    <h1>ECO World</h1>
                 </div>
             </div>
             <div class="row">
@@ -84,13 +85,13 @@
                 <div class="col">
                     <div v-if="!walletLoading">
                         <button class="btn btn-primary" @click="onCreateWallet" title="Create new Project Wallet">
-                            World Mart
+                            Job Mart
                         </button>
                         <button class="btn btn-primary" @click="onLoadWallet" title="Investor Wallet">
-                            World Street
+                            Eco Bank
                         </button>
                         <button class="btn btn-primary" title="Knowledge Wallet">
-                            World Progress
+                            World Skills
                         </button>
                     </div>
 
@@ -108,7 +109,7 @@
             <hr>
             <div v-if="!wallet" class="row">
                 <div class="col">
-                    <div class="alert alert-warning">Create a Wallet to start sending coins or to mine coins!</div>
+                    <div class="alert alert-warning">Create an Eco Wallet to start Collaboration and Progress!</div>
                 </div>
             </div>
             <div v-if="wallet" class="row">
@@ -142,7 +143,7 @@
                     <ul class="nav nav-tabs">
                         <li class="nav-item">
                             <a class="nav-link" :class="{active: view === 'chain'}" href="#"
-                                @click="view = 'chain'">Blockchain</a>
+                                @click="view = 'chain'">Project Blockchain</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" :class="{active: view === 'tx'}" href="#" @click="view = 'tx'">Open
