@@ -184,7 +184,7 @@ class Blockchain:
         Arguments:
             :sender: Tecihe sender of the coins.
             :rpient: The recipient of the coins.
-            :amount: The amount of coins sent with the transaction 
+            :amount: The amount of coins sent with the transaction
                      (default = 1.0)
         """
         # transaction = {
@@ -221,7 +221,8 @@ class Blockchain:
         if self.public_key == None:
             return None
         last_block = self.__chain[-1]
-        # Hash the last block (=> to be able to compare it to the stored hash value)
+        # Hash the last block 
+        # (=> to be able to compare it to the stored hash value)
         hashed_block = hash_block(last_block)
         proof = self.proof_of_work()
         # Miners should be rewarded, so let's create a reward transaction
