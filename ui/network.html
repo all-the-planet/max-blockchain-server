@@ -41,7 +41,7 @@
                 <div class="col">
                     <form @submit.prevent="onAddNode">
                         <div class="form-group">
-                            <label for="node-url">Node URL</label>
+                            <label for="node-url">ECO Friend URL</label>
                             <input v-model="newNodeUrl" type="text" class="form-control" id="node-url"
                                 placeholder="localhost:4440">
                         </div>
@@ -52,7 +52,7 @@
             <hr>
             <div class="row my-3">
                 <div class="col">
-                    <button class="btn btn-primary" @click="onLoadNodes">Load Peer Nodes</button>
+                    <button class="btn btn-primary" @click="onLoadNodes">List ECO Friends</button>
                 </div>
             </div>
             <div class="row">
